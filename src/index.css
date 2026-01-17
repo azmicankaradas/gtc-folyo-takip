@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f1f5f9; /* Göz yormayan profesyonel gri ton */
+  color: #0f172a;
+}
