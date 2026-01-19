@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabase'
 import { Trash2, Plus, Moon, Sun, Box, Search, AlertTriangle, Lock, Unlock, X, Minus } from 'lucide-react'
 
-// ŞİFRE
 const ADMIN_PASSWORD = "1234"; 
-
-const INITIAL_DATA = [{"marka": "ABB", "tip": "Sırt", "adet": 10, "sinir": 5}, {"marka": "Fenermekanik", "tip": "Sırt", "adet": 55, "sinir": 30}];
 
 function App() {
   const [inventory, setInventory] = useState([])
@@ -85,7 +82,7 @@ function App() {
 
   const deleteItem = async (id) => {
     if (!isAdmin) return;
-    if (!confirm("Bu ürünü silmek istediğine emin misin?")) return
+    if (!confirm("Silmek istediğine emin misin?")) return
     setInventory(inventory.filter(item => item.id !== id))
     await supabase.from('folyolar').delete().eq('id', id)
   }
@@ -99,30 +96,32 @@ function App() {
   const filteredInventory = inventory.filter(item => item.marka.toLowerCase().includes(searchTerm.toLowerCase()) || item.tip.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
-    <div className={`min-h-screen font-sans pb-32 transition-colors duration-200 ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`min-h-screen font-sans pb-32 transition-colors duration-200 ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-100 text-slate-900'}`}>
       
-      {/* --- GİRİŞ MODALI (SADE VE NET) --- */}
+      {/* --- GİRİŞ MODALI (IPHONE İÇİN GÜVENLİ MOD) --- */}
       {showLoginModal && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 p-4">
-            <div className={`w-full max-w-sm p-8 rounded-2xl shadow-2xl relative border ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-gray-300'}`}>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4">
+            {/* autoFocus kaldırıldı, blur kaldırıldı */}
+            <div className={`w-full max-w-sm p-6 rounded-2xl shadow-none border relative ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-gray-300'}`}>
                 
-                <button onClick={() => setShowLoginModal(false)} className="absolute right-4 top-4 text-gray-400 hover:text-red-500">
-                    <X size={24}/>
+                <button onClick={() => setShowLoginModal(false)} className="absolute right-4 top-4 text-gray-400 hover:text-red-500 p-2">
+                    <X size={28}/>
                 </button>
 
-                <div className="text-center mb-6">
+                <div className="text-center mb-6 mt-2">
                     <div className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
                         <Lock size={32} className="text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold">Yönetici Girişi</h2>
+                    <h2 className="text-xl font-bold">Yönetici Girişi</h2>
+                    <p className="text-sm opacity-60 mt-1">Lütfen şifreyi girin</p>
                 </div>
 
                 <form onSubmit={handleLogin}>
+                    {/* iPhone'da klavye patlamasın diye autoFocus YOK */}
                     <input 
-                        type="password" 
+                        type="password" // iPhone'un şifre yöneticisi tetiklenmesin diye düz input gibi davranabilir ama güvenlik için password kalsın
                         placeholder="Şifre" 
-                        autoFocus 
-                        className={`w-full p-4 text-center text-xl font-bold tracking-widest rounded-xl border-2 mb-4 outline-none 
+                        className={`w-full p-4 text-center text-xl font-bold tracking-widest rounded-xl border-2 mb-4 outline-none appearance-none
                         ${darkMode ? 'bg-slate-900 border-slate-600 text-white' : 'bg-gray-50 border-gray-300 text-black'} 
                         ${loginError ? 'border-red-500' : 'focus:border-blue-500'}`} 
                         value={passwordInput} 
@@ -131,7 +130,7 @@ function App() {
                     
                     {loginError && <p className="text-red-500 text-center font-bold mb-4">HATALI ŞİFRE!</p>}
 
-                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg">
+                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-lg active:scale-95 transition">
                         GİRİŞ YAP
                     </button>
                 </form>
@@ -142,16 +141,16 @@ function App() {
       <div className="max-w-7xl mx-auto p-4 md:p-8">
         
         {/* --- HEADER --- */}
-        <div className={`flex justify-between items-center mb-8 p-6 rounded-2xl shadow-sm border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-600 p-3 rounded-xl text-white">
-                <Box size={28} />
+        <div className={`flex justify-between items-center mb-6 p-4 rounded-2xl shadow-sm border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded-xl text-white">
+                <Box size={24} />
             </div>
             <div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Folyo Stok</h1>
+                <h1 className="text-xl font-bold tracking-tight">Folyo Stok</h1>
                 <div className="flex items-center gap-2 mt-1">
                     <span className={`w-2 h-2 rounded-full ${isAdmin ? 'bg-green-500' : 'bg-slate-400'}`}></span>
-                    <span className="text-xs font-bold uppercase opacity-60 tracking-wider">
+                    <span className="text-[10px] font-bold uppercase opacity-60 tracking-wider">
                         {isAdmin ? 'YÖNETİCİ' : 'İZLEME'}
                     </span>
                 </div>
@@ -161,19 +160,19 @@ function App() {
           <div className="flex gap-2">
              <button 
                 onClick={isAdmin ? handleLogout : () => setShowLoginModal(true)} 
-                className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-xl font-bold transition-colors
-                ${isAdmin ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
-                {isAdmin ? <><Lock size={20}/> <span className="hidden md:inline">Çıkış</span></> : <><Unlock size={20}/> <span className="hidden md:inline">Giriş</span></>}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-colors
+                ${isAdmin ? 'bg-red-100 text-red-600' : 'bg-blue-600 text-white'}`}>
+                {isAdmin ? <><Lock size={18}/> <span className="hidden md:inline">Çıkış</span></> : <><Unlock size={18}/> <span className="hidden md:inline">Giriş</span></>}
              </button>
 
-            <button onClick={toggleTheme} className={`p-3 rounded-xl border ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-300' : 'bg-gray-100 border-gray-300 text-gray-600'}`}>
-              {darkMode ? <Sun size={24} /> : <Moon size={24} />}
+            <button onClick={toggleTheme} className={`p-2 rounded-xl border ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-300' : 'bg-gray-100 border-gray-300 text-gray-600'}`}>
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
         </div>
 
         {/* --- ARAMA KUTUSU --- */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 sticky top-2 z-10">
+        <div className="flex gap-3 mb-6 sticky top-2 z-10">
           <div className={`flex-1 flex items-center px-4 py-3 rounded-xl shadow-md border-2 ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-blue-100'}`}>
             <Search className="text-gray-400 mr-3" size={24} />
             <input 
@@ -187,26 +186,28 @@ function App() {
           {isAdmin && (
             <button 
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2">
-                <Plus size={24} /> <span className="hidden md:inline">Yeni Ekle</span>
+                className="bg-blue-600 text-white px-4 rounded-xl font-bold shadow-md flex items-center justify-center active:scale-95 transition">
+                <Plus size={24} />
             </button>
           )}
         </div>
 
         {/* --- EKLEME FORMU --- */}
         {showAddForm && isAdmin && (
-          <div className={`p-6 mb-8 rounded-2xl shadow-xl border-l-4 border-blue-600 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-            <h3 className="font-bold mb-4 text-lg">Yeni Stok Kartı</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <input placeholder="Marka" className={`p-3 rounded-lg border-2 font-bold md:col-span-2 ${darkMode ? 'bg-slate-900 border-slate-600' : 'bg-white border-gray-300'}`} value={newItem.marka} onChange={e => setNewItem({...newItem, marka: e.target.value})} />
-              <input placeholder="Tip" className={`p-3 rounded-lg border-2 font-bold ${darkMode ? 'bg-slate-900 border-slate-600' : 'bg-white border-gray-300'}`} value={newItem.tip} onChange={e => setNewItem({...newItem, tip: e.target.value})} />
-              <input type="number" placeholder="Adet" className={`p-3 rounded-lg border-2 font-bold ${darkMode ? 'bg-slate-900 border-slate-600' : 'bg-white border-gray-300'}`} value={newItem.adet} onChange={e => setNewItem({...newItem, adet: parseInt(e.target.value)})} />
-              <button onClick={addItem} className="bg-blue-600 text-white rounded-lg font-bold py-3 md:col-span-4 hover:bg-blue-700">KAYDET</button>
+          <div className={`p-5 mb-6 rounded-2xl shadow-xl border-l-4 border-blue-600 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
+            <h3 className="font-bold mb-3 text-lg">Yeni Stok Ekle</h3>
+            <div className="grid grid-cols-1 gap-3">
+              <input placeholder="Marka Adı" className={`p-3 rounded-lg border-2 font-bold ${darkMode ? 'bg-slate-900 border-slate-600' : 'bg-white border-gray-300'}`} value={newItem.marka} onChange={e => setNewItem({...newItem, marka: e.target.value})} />
+              <div className="flex gap-3">
+                <input placeholder="Tip" className={`flex-1 p-3 rounded-lg border-2 font-bold ${darkMode ? 'bg-slate-900 border-slate-600' : 'bg-white border-gray-300'}`} value={newItem.tip} onChange={e => setNewItem({...newItem, tip: e.target.value})} />
+                <input type="number" placeholder="Adet" className={`flex-1 p-3 rounded-lg border-2 font-bold ${darkMode ? 'bg-slate-900 border-slate-600' : 'bg-white border-gray-300'}`} value={newItem.adet} onChange={e => setNewItem({...newItem, adet: parseInt(e.target.value)})} />
+              </div>
+              <button onClick={addItem} className="bg-blue-600 text-white rounded-lg font-bold py-3 hover:bg-blue-700">KAYDET</button>
             </div>
           </div>
         )}
 
-        {/* --- MASAÜSTÜ TABLOSU (NET VE SAĞLAM) --- */}
+        {/* --- MASAÜSTÜ TABLOSU --- */}
         <div className={`hidden md:block rounded-2xl overflow-hidden shadow-sm border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
           <table className="w-full text-left border-collapse">
             <thead className={`text-sm uppercase font-bold tracking-wider ${darkMode ? 'bg-slate-900 text-slate-400' : 'bg-gray-100 text-gray-500'}`}>
@@ -220,26 +221,14 @@ function App() {
             <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-gray-100'}`}>
               {filteredInventory.map((item) => (
                 <tr key={item.id} className={`transition-colors ${darkMode ? 'hover:bg-slate-700' : 'hover:bg-blue-50'}`}>
-                  
-                  {/* Marka */}
                   <td className="p-5 align-middle">
-                    <div className={`text-xl font-black mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                        {item.marka}
-                    </div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded border uppercase ${darkMode ? 'bg-slate-900 border-slate-600 text-slate-300' : 'bg-white border-gray-300 text-slate-600'}`}>
-                        {item.tip}
-                    </span>
+                    <div className={`text-xl font-black mb-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{item.marka}</div>
+                    <span className={`text-xs font-bold px-2 py-1 rounded border uppercase ${darkMode ? 'bg-slate-900 border-slate-600 text-slate-300' : 'bg-white border-gray-300 text-slate-600'}`}>{item.tip}</span>
                   </td>
-                  
-                  {/* Stok */}
                   <td className="p-5 text-center align-middle">
-                    <span className={`text-3xl font-black ${item.adet < item.sinir ? 'text-red-500' : (darkMode ? 'text-white' : 'text-slate-900')}`}>
-                        {item.adet}
-                    </span>
+                    <span className={`text-3xl font-black ${item.adet < item.sinir ? 'text-red-500' : (darkMode ? 'text-white' : 'text-slate-900')}`}>{item.adet}</span>
                     {item.adet < item.sinir && <div className="text-[10px] font-bold text-red-500 mt-1 animate-pulse">KRİTİK</div>}
                   </td>
-
-                  {/* Butonlar */}
                   <td className="p-5 text-center align-middle">
                     {isAdmin ? (
                         <div className="flex justify-center items-center gap-2">
@@ -250,18 +239,10 @@ function App() {
                             </div>
                             <button onClick={() => updateStock(item.id, item.adet, 1)} className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 font-bold ${darkMode ? 'bg-slate-900 border-slate-600 text-green-400 hover:border-green-500' : 'bg-white border-gray-300 text-green-600 hover:border-green-500'}`}>+</button>
                         </div>
-                    ) : (
-                        <div className="flex justify-center opacity-30"><Lock size={20}/></div>
-                    )}
+                    ) : <Lock size={20} className="mx-auto opacity-30"/>}
                   </td>
-
-                  {/* Silme */}
                   <td className="p-5 text-right align-middle">
-                    {isAdmin && (
-                        <button onClick={() => deleteItem(item.id)} className="p-3 text-gray-400 hover:text-red-500 transition">
-                            <Trash2 size={20}/>
-                        </button>
-                    )}
+                    {isAdmin && <button onClick={() => deleteItem(item.id)} className="p-3 text-gray-400 hover:text-red-500 transition"><Trash2 size={20}/></button>}
                   </td>
                 </tr>
               ))}
