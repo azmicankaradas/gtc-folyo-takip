@@ -106,7 +106,7 @@ export default function LoginPage({ darkMode }) {
                 <Mail size={18} className={darkMode ? 'text-slate-500' : 'text-gray-400'} />
                 <input
                   type="email"
-                  placeholder={isRegister ? 'ad.soyad@gtcendustriyel.com' : 'E-posta adresiniz'}
+                  placeholder={isRegister ? 'ad.soyad@gtcendustriyel.com veya @glbtradecorp.com' : 'E-posta adresiniz'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -115,7 +115,7 @@ export default function LoginPage({ darkMode }) {
               </div>
               {isRegister && (
                 <p className={`text-[11px] mt-1.5 font-medium ${darkMode ? 'text-slate-500' : 'text-gray-400'}`}>
-                  Sadece @gtcendustriyel.com uzantılı e-postalar kabul edilir
+                  Sadece @gtcendustriyel.com ve @glbtradecorp.com uzantılı e-postalar kabul edilir
                 </p>
               )}
             </div>

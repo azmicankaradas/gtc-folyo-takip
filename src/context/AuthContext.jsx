@@ -47,9 +47,9 @@ export function AuthProvider({ children }) {
   }
 
   const signUp = async (email, password) => {
-    // Sadece @gtcendustriyel.com uzantılı e-postalar
-    if (!email.endsWith('@gtcendustriyel.com')) {
-      return { error: { message: 'Sadece @gtcendustriyel.com uzantılı e-posta adresleri ile kayıt olunabilir.' } }
+    // Sadece @gtcendustriyel.com ve @glbtradecorp.com uzantılı e-postalar
+    if (!email.endsWith('@gtcendustriyel.com') && !email.endsWith('@glbtradecorp.com')) {
+      return { error: { message: 'Sadece @gtcendustriyel.com veya @glbtradecorp.com uzantılı e-posta adresleri ile kayıt olunabilir.' } }
     }
 
     const { data, error } = await supabase.auth.signUp({ email, password })
