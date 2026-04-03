@@ -19,7 +19,7 @@ function App() {
   
   const [editMode, setEditMode] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
-  const [newItem, setNewItem] = useState({ marka: '', tip: '', adet: 0, sinir: 5 })
+  const [newItem, setNewItem] = useState({ marka: '', tip: '', adet: '', sinir: '' })
   const [selectedBrand, setSelectedBrand] = useState(null)
 
   // İstatistikler
@@ -59,11 +59,16 @@ function App() {
 
   const addItem = async () => {
     if (!newItem.marka || !newItem.tip) return alert("Marka ve tip girin.")
-    const { data, error } = await supabase.from('folyolar').insert([newItem]).select()
+    const itemToSave = {
+      ...newItem,
+      adet: newItem.adet === '' ? 0 : parseInt(newItem.adet) || 0,
+      sinir: newItem.sinir === '' ? 5 : parseInt(newItem.sinir) || 5
+    }
+    const { data, error } = await supabase.from('folyolar').insert([itemToSave]).select()
     if (error) alert("Hata: " + error.message); else {
       const updated = [...inventory, data[0]].sort((a, b) => a.marka.localeCompare(b.marka, 'tr'))
       setInventory(updated); 
-      setNewItem({ marka: '', tip: '', adet: 0, sinir: 5 }); 
+      setNewItem({ marka: '', tip: '', adet: '', sinir: '' }); 
       setShowAddForm(false)
     }
   }
@@ -264,7 +269,8 @@ function App() {
                     type="number" min="0"
                     className={`w-full p-3 rounded-xl border-2 font-semibold text-sm outline-none transition-colors ${inputClass}`} 
                     value={newItem.adet} 
-                    onChange={e => setNewItem({...newItem, adet: parseInt(e.target.value) || 0})} 
+                    placeholder="0"
+                    onChange={e => setNewItem({...newItem, adet: e.target.value})} 
                   />
                 </div>
                 <div>
@@ -273,7 +279,8 @@ function App() {
                     type="number" min="0"
                     className={`w-full p-3 rounded-xl border-2 font-semibold text-sm outline-none transition-colors ${inputClass}`} 
                     value={newItem.sinir} 
-                    onChange={e => setNewItem({...newItem, sinir: parseInt(e.target.value) || 5})} 
+                    placeholder="5"
+                    onChange={e => setNewItem({...newItem, sinir: e.target.value})} 
                   />
                 </div>
               </div>
@@ -292,7 +299,7 @@ function App() {
               <h2 className={`text-sm font-bold uppercase tracking-wider ${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Çok Giden Ürünler</h2>
               <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${darkMode ? 'bg-orange-500/10 text-orange-400' : 'bg-orange-50 text-orange-600'}`}>{cokGidenGrouped.length} firma</span>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+            <div className="hot-products-scroll flex gap-3 overflow-x-auto pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
               {cokGidenGrouped.map(group => (
                 <div key={`cg-${group.marka}`} className={`shrink-0 w-48 sm:w-52 p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ${
                   darkMode 

@@ -36,6 +36,25 @@ body, div, header, table, tr, td, th {
   background: rgba(100, 116, 139, 0.5);
 }
 
+/* Horizontal scrollbar for hot products */
+.hot-products-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+}
+.hot-products-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.hot-products-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.hot-products-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 999px;
+}
+.hot-products-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
 /* Number input spinners hidden */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
